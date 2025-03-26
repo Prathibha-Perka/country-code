@@ -1,0 +1,53 @@
+<template>
+  <lightning-card title="Country Details">
+    <!-- Input Section -->
+    <div class="slds-p-around_medium slds-grid slds-grid_vertical-align-center">
+      <lightning-input
+        class="input slds-m-right_small"
+        label="Enter ZIP Code"
+        required
+        onkeyup={handleKeyUp}
+        style="width: 300px;"
+      ></lightning-input>
+    </div>
+
+    <!-- Modal for Non-US Data -->
+    <template lwc:if={isDifferentCountryCode}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-modal_large slds-fade-in-open">
+        <div class="slds-modal__container">
+          <!-- Header Section -->
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closePopUp}>
+              <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+            </button>
+            <h2 class="slds-text-heading_medium">{formattedData.country} ZIP Code</h2>
+          </header>
+
+          <!-- Modal Content -->
+          <div class="slds-modal__content slds-p-around_medium">
+            <lightning-datatable
+              data={formattedData.places}
+              columns={columns}
+              key-field="place_name"
+              hide-checkbox-column="true"
+            ></lightning-datatable>
+          </div>
+
+          <!-- Modal Footer -->
+          <footer class="slds-modal__footer">
+            <lightning-button label="Close" onclick={closePopUp} variant="neutral"></lightning-button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- US Data Display -->
+    <template lwc:elseif={isUSZipCode}>
+      <c-zip-code-display
+        places={formattedData.places}
+        columns={columns}
+      ></c-zip-code-display>
+    </template>
+  </lightning-card>
+</template>
